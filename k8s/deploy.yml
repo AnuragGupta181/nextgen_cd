@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: anurag181/nextgen-backend:latest
+          image: anurag181/nextgen-backend:15
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: anurag181/nextgen-frontend:latest
+          image: anurag181/nextgen-frontend:15
           imagePullPolicy: Always
           ports:
             - containerPort: 80
