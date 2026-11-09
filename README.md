@@ -141,10 +141,11 @@ curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kube
 chmod +x kubectl-argo-rollouts-linux-amd64
 sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
 
-# 3. Install Sealed Secrets controller
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm repo update
-helm install sealed-secrets-controller sealed-secrets/sealed-secrets --namespace kube-system
+# 3. Install Sealed Secrets controller (Direct manifest or Helm)
+kubectl apply -f https://github.com/bitnami/sealed-secrets/releases/download/v0.41.2/controller.yaml
+# Or via Helm:
+# helm repo add sealed-secrets https://bitnami.github.io/sealed-secrets && helm repo update
+# helm install sealed-secrets-controller sealed-secrets/sealed-secrets --namespace kube-system
 
 # 4. Install kubeseal CLI
 KUBESEAL_VERSION="0.41.2"

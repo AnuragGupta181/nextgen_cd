@@ -3,28 +3,35 @@
 
 ## 1. Install the Sealed Secrets Controller (on CD EC2 — K8s cluster)
 
-### Option A: Helm (Recommended)
+### Option A: kubectl Direct Apply (Fastest & Recommended — No Helm Needed)
 
 ```bash
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm repo update
-
-helm install sealed-secrets-controller sealed-secrets/sealed-secrets \
-  --namespace kube-system
+kubectl apply -f https://github.com/bitnami/sealed-secrets/releases/download/v0.41.2/controller.yaml
 ```
 
-### Option B: kubectl (Direct manifest)
+### Option B: Helm
+
+> **Note:** Bitnami recently migrated the repository. Use `bitnami.github.io` (not the deprecated `bitnami-labs`).
 
 ```bash
-# Replace v0.41.2 with the latest release version
-kubectl apply -f https://github.com/bitnami/sealed-secrets/releases/download/v0.41.2/controller.yaml
+# If you previously added the old repo, remove it first:
+helm repo remove sealed-secrets 2>/dev/null || true
+
+# Add the new repository URL:
+helm repo add sealed-secrets https://bitnami.github.io/sealed-secrets
+helm repo update
+
+# Install the controller into kube-system:
+helm install sealed-secrets-controller sealed-secrets/sealed-secrets \
+  --namespace kube-system
 ```
 
 ### Verify Controller is Running
 
 ```bash
-kubectl get pods -n kube-system -l app.kubernetes.io/name=sealed-secrets
-kubectl logs -n kube-system -l app.kubernetes.io/name=sealed-secrets
+kubectl get pods -n kube-system -l name=sealed-secrets-controller
+# or
+kubectl get pods -n kube-system | grep sealed-secrets
 ```
 
 ---
