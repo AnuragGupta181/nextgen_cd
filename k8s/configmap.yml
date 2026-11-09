@@ -10,5 +10,5 @@ data:
   NODE_ENV: "production"
   PORT: "5000"
   MONGO_POOL_SIZE: "50"
-  CORS_ORIGIN: "http://localhost:5173,http://localhost:3000,https://coding-plateform-alpha.vercel.app,https://coding.cccakgec.in,https://coding-plateform-egyb.vercel.app,https://nextgen.kaarma.studio,http://k8s.nextgen,https://k8s.nextgen,http://preview.k8s.nextgen,https://preview.k8s.nextgen"
+  CORS_ORIGIN: "http://localhost:5173,http://localhost:3000,https://coding-plateform-alpha.vercel.app,https://coding.cccakgec.in,https://coding-plateform-egyb.vercel.app,https://nextgen.kaarma.studio,http://k8s.nextgen,https://k8s.nextgen,http://preview.k8s.nextgen,https://preview.k8s.nextgen,http://3.110.207.83:8080,https://3.110.207.83:8080,http://3.110.207.83,https://3.110.207.83"
   EMAIL_SERVICE: "gmail"

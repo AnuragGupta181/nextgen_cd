@@ -4,7 +4,7 @@ This repository contains the Kubernetes manifests and GitOps deployment configur
 
 ---
 
-## 🏛️ CI/CD Architecture
+## CI/CD Architecture
 
 ![CI/CD Architecture](./architecture.png)
 
@@ -211,13 +211,15 @@ spec:
 
 ---
 
-## 🖥️ Infrastructure Layout
+## Infrastructure Layout
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| **Jenkins + SonarQube** | EC2 #1 (`15.207.14.85`) | CI — builds, tests, scans, pushes images |
-| **K8s + ArgoCD + Argo Rollouts** | EC2 #2 | CD — runs the app, blue-green deployments |
-| **Docker Hub** | `anurag181/*` | Container image registry |
-| **GitHub** | `AnuragGupta181/Coding-Plateform` | Application source + Jenkins shared library |
-| **GitHub** | `AnuragGupta181/nextgen_cd` | This repo — K8s manifests (GitOps) |
-| **Bitnami Sealed Secrets** | In-cluster (kube-system) | Decrypt SealedSecret → K8s Secret |
+| **Component** | **Location / Host** | **Purpose** |
+|---|---|---|
+| **Jenkins CI** | EC2 #1 (`15.207.14.85:8080`) | Pulls code, runs tests, SonarQube, Trivy, Docker build & push |
+| **SonarQube** | EC2 #1 (`15.207.14.85:9000`) | Static analysis and Quality Gate enforcement |
+| **Argo CD** | EC2 #2 (`https://3.110.207.83:8080/applications`) | GitOps Continuous Delivery & Kubernetes cluster management |
+| **Argo Rollouts** | In-cluster (EC2 #2) | Manages Blue-Green zero-downtime rollouts & traffic shifting |
+| **Sealed Secrets** | In-cluster (EC2 #2, `kube-system`) | Decrypts `SealedSecret` resources into native K8s Secrets |
+| **Docker Hub** | `anurag181/*` | Container registry for backend & frontend images |
+| **GitHub** | `AnuragGupta181/Coding-Plateform` | Application source code & Jenkins Shared Library |
+| **GitHub** | `AnuragGupta181/nextgen_cd` | GitOps deployment manifests repository |
