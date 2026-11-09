@@ -1,24 +1,43 @@
-# Ingress routing for backend service
+# Ingress routing for backend API and frontend
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend-ingress
+  name: nextgen-ingress
   namespace: nextgen
   labels:
-    app: coding-platform-backend
+    app.kubernetes.io/part-of: coding-platform
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
 spec:
   ingressClassName: nginx
   rules:
     - host: k8s.nextgen
       http:
         paths:
-          - path: /
+          # Backend API — all /api/* requests
+          - path: /api
             pathType: Prefix
             backend:
               service:
                 name: backend-service
                 port:
                   number: 5000
+          # SSE events path
+          - path: /api/query/events
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 5000
+          # Frontend — everything else (catch-all)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80

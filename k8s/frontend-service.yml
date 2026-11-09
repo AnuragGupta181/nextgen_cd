@@ -1,0 +1,16 @@
+# Frontend ClusterIP Service (Ingress routes external traffic to it)
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: nextgen
+  labels:
+    app: coding-platform-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: coding-platform-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

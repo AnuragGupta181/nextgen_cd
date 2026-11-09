@@ -4,9 +4,10 @@ secrets.yml
 *.secret.yml
 *.secret.yaml
 
-# Allow example secrets template
+# Allow example secrets template and sealed secrets (encrypted, safe to commit)
 !k8s/secrets.example.yml
 !secrets.example.yml
+!k8s/sealed-secrets.yml
 
 # Environment files
 .env

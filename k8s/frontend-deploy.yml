@@ -1,0 +1,48 @@
+# Frontend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: nextgen
+  labels:
+    app: coding-platform-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: coding-platform-frontend
+  template:
+    metadata:
+      labels:
+        app: coding-platform-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: anurag181/nextgen-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
