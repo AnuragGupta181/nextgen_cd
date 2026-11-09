@@ -4,7 +4,7 @@ This repository contains the Kubernetes manifests and GitOps deployment configur
 
 ---
 
-## 🏛️ CI/CD Architecture Flow
+## CI/CD Architecture Flow
 
 ![CI/CD Architecture](./architecture.png)
 
@@ -35,7 +35,7 @@ This repository contains the Kubernetes manifests and GitOps deployment configur
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 .
@@ -55,7 +55,7 @@ This repository contains the Kubernetes manifests and GitOps deployment configur
 
 ---
 
-## 🚀 Deployment Instructions
+## Deployment Instructions
 
 ### 1. Configure Secrets
 
@@ -102,7 +102,7 @@ kubectl rollout status deployment/backend -n nextgen
 
 ---
 
-## 🤖 Argo CD Application Setup
+## Argo CD Application Setup
 
 To deploy via Argo CD, create an Argo CD Application referencing this repository:
 
