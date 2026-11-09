@@ -10,8 +10,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/websocket-services: "backend-active"
 spec:
   ingressClassName: nginx
   rules:
@@ -20,6 +21,14 @@ spec:
         paths:
           # Backend API — all /api/* requests → active backend
           - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-active
+                port:
+                  number: 5000
+          # WebSockets / Socket.IO — WebRTC signaling & real-time monitoring
+          - path: /socket.io
             pathType: Prefix
             backend:
               service:
@@ -35,7 +44,7 @@ spec:
                 port:
                   number: 80
 ---
-# Preview Ingress — optional, for testing new versions before promotion
+# Preview Ingress — for testing new versions before promotion
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -46,6 +55,9 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/websocket-services: "backend-preview"
 spec:
   ingressClassName: nginx
   rules:
@@ -53,6 +65,13 @@ spec:
       http:
         paths:
           - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-preview
+                port:
+                  number: 5000
+          - path: /socket.io
             pathType: Prefix
             backend:
               service:
