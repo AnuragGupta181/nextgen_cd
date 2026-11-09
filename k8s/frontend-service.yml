@@ -1,11 +1,12 @@
-# Frontend ClusterIP Service (Ingress routes external traffic to it)
+# Frontend Active Service — routes PRODUCTION traffic to the stable version
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: frontend-active
   namespace: nextgen
   labels:
     app: coding-platform-frontend
+    role: active
 spec:
   type: ClusterIP
   selector:
@@ -14,3 +15,23 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+      name: http
+---
+# Frontend Preview Service — routes TEST traffic to the new version
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-preview
+  namespace: nextgen
+  labels:
+    app: coding-platform-frontend
+    role: preview
+spec:
+  type: ClusterIP
+  selector:
+    app: coding-platform-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http

@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Helper script to generate sealed secrets from a .env file
+# Reference: https://github.com/bitnami/sealed-secrets
+#
 # Usage: bash seal-secrets.sh [path-to-.env]
 #
 # Prerequisites:
-#   - kubeseal CLI installed
+#   - kubeseal CLI installed (https://github.com/bitnami/sealed-secrets/releases)
 #   - Sealed Secrets controller running in the K8s cluster
 #   - kubectl configured to talk to the cluster
 
@@ -37,7 +39,12 @@ echo "📂 Using .env file: $ENV_FILE"
 # Check prerequisites
 if ! command -v kubeseal &> /dev/null; then
   echo "❌ kubeseal is not installed."
-  echo "   Install: https://github.com/bitnami-labs/sealed-secrets/releases"
+  echo ""
+  echo "Install it:"
+  echo '  KUBESEAL_VERSION="0.41.2"'
+  echo '  curl -OL "https://github.com/bitnami/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz"'
+  echo '  tar -xvzf kubeseal-*.tar.gz kubeseal'
+  echo '  sudo install -m 755 kubeseal /usr/local/bin/kubeseal'
   exit 1
 fi
 
@@ -49,22 +56,20 @@ fi
 TMP_SECRET=$(mktemp /tmp/raw-secret-XXXXXX.yml)
 trap "rm -f $TMP_SECRET" EXIT
 
-echo "🔐 Creating raw K8s Secret from .env …"
+echo "🔐 Creating raw K8s Secret from .env (dry-run) …"
 kubectl create secret generic backend-secrets \
   --namespace=nextgen \
   --from-env-file="$ENV_FILE" \
   --dry-run=client -o yaml > "$TMP_SECRET"
 
-echo "🔒 Sealing with kubeseal …"
+echo "🔒 Sealing with kubeseal (using cluster's public key) …"
 kubeseal \
-  --controller-name=sealed-secrets-controller \
-  --controller-namespace=kube-system \
-  --format yaml \
-  < "$TMP_SECRET" \
+  -f "$TMP_SECRET" \
+  -o yaml \
   > "$SCRIPT_DIR/sealed-secrets.yml"
 
 echo ""
 echo "✅ Sealed secret written to: $SCRIPT_DIR/sealed-secrets.yml"
 echo "   You can safely commit and push this file."
 echo ""
-echo "🧹 Raw secret deleted from temp."
+echo "🧹 Raw secret auto-deleted from temp."

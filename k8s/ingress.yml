@@ -1,4 +1,5 @@
-# Ingress routing for backend API and frontend
+# Ingress routing — points to ACTIVE (production) services
+# Argo Rollouts manages which ReplicaSet the active/preview services point to
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -17,27 +18,51 @@ spec:
     - host: k8s.nextgen
       http:
         paths:
-          # Backend API — all /api/* requests
+          # Backend API — all /api/* requests → active backend
           - path: /api
             pathType: Prefix
             backend:
               service:
-                name: backend-service
+                name: backend-active
                 port:
                   number: 5000
-          # SSE events path
-          - path: /api/query/events
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
-                port:
-                  number: 5000
-          # Frontend — everything else (catch-all)
+          # Frontend — everything else → active frontend
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: frontend-service
+                name: frontend-active
+                port:
+                  number: 80
+---
+# Preview Ingress — optional, for testing new versions before promotion
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nextgen-preview-ingress
+  namespace: nextgen
+  labels:
+    app.kubernetes.io/part-of: coding-platform
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: preview.k8s.nextgen
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-preview
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-preview
                 port:
                   number: 80

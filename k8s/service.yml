@@ -1,17 +1,37 @@
-# Backend NodePort Service
+# Backend Active Service — routes PRODUCTION traffic to the stable/current version
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: backend-active
   namespace: nextgen
   labels:
     app: coding-platform-backend
+    role: active
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: coding-platform-backend
   ports:
     - protocol: TCP
       port: 5000
       targetPort: 5000
-      nodePort: 30500
+      name: http
+---
+# Backend Preview Service — routes TEST traffic to the new version (pre-promotion)
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-preview
+  namespace: nextgen
+  labels:
+    app: coding-platform-backend
+    role: preview
+spec:
+  type: ClusterIP
+  selector:
+    app: coding-platform-backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: http

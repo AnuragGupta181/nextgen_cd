@@ -1,6 +1,7 @@
-# Frontend Deployment
-apiVersion: apps/v1
-kind: Deployment
+# Frontend Blue-Green Rollout (Argo Rollouts)
+# Reference: https://github.com/argoproj/argocd-example-apps/tree/master/blue-green
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: frontend
   namespace: nextgen
@@ -8,9 +9,20 @@ metadata:
     app: coding-platform-frontend
 spec:
   replicas: 2
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: coding-platform-frontend
+  strategy:
+    blueGreen:
+      # Active service carries production traffic
+      activeService: frontend-active
+      # Preview service for testing new version
+      previewService: frontend-preview
+      # Auto-promote frontend after readiness checks pass (frontend is static assets)
+      autoPromotionEnabled: true
+      # Keep old pods alive for 30s after promotion
+      scaleDownDelaySeconds: 30
   template:
     metadata:
       labels:
@@ -23,6 +35,7 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+              name: http
           livenessProbe:
             httpGet:
               path: /
