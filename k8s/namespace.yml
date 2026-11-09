@@ -1,0 +1,8 @@
+# Namespace for coding platform
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nextgen
+  labels:
+    app.kubernetes.io/part-of: coding-platform
+    app.kubernetes.io/managed-by: kubectl

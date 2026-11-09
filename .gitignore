@@ -1,0 +1,30 @@
+# Kubernetes Secrets (never commit sensitive credentials)
+k8s/secrets.yml
+secrets.yml
+*.secret.yml
+*.secret.yaml
+
+# Allow example secrets template
+!k8s/secrets.example.yml
+!secrets.example.yml
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo

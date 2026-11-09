@@ -1,0 +1,14 @@
+# ConfigMap for backend configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: nextgen
+  labels:
+    app: coding-platform-backend
+data:
+  NODE_ENV: "production"
+  PORT: "5000"
+  MONGO_POOL_SIZE: "50"
+  CORS_ORIGIN: "http://localhost:5173,https://coding-plateform-alpha.vercel.app,https://coding.cccakgec.in"
+  EMAIL_SERVICE: "gmail"

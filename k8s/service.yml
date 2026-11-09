@@ -1,0 +1,17 @@
+# Backend NodePort Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: nextgen
+  labels:
+    app: coding-platform-backend
+spec:
+  type: NodePort
+  selector:
+    app: coding-platform-backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30500
